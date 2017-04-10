@@ -1,4 +1,4 @@
-defmodule RabbitmqMetronomeElixir do
+defmodule RabbitMQ.Plugin.Metronome do
   @moduledoc """
   Documentation for RabbitmqMetronomeElixir.
   """
