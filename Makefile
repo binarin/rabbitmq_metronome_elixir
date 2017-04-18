@@ -1,6 +1,4 @@
-PROJECT = rabbitmq_metronome
-PROJECT_DESCRIPTION = Embedded Rabbit Metronome (Elixir version)
-PROJECT_MOD = Elixir.RabbitMQ.Plugin.Metronome
+PROJECT = rabbitmq_metronome_elixir # XXX not sure if needed
 
 DEPS = rabbit_common rabbit amqp_client
 TEST_DEPS = rabbitmq_ct_helpers rabbitmq_ct_client_helpers
@@ -11,7 +9,7 @@ elixir_srcs := mix.exs \
                $(shell find config lib -name "*.ex" -o -name "*.exs")
 
 app:: $(elixir_srcs) deps
-	$(gen_verbose) echo y | mix make_all
+	$(MIX) make_all
 
 # FIXME: Use erlang.mk patched for RabbitMQ, while waiting for PRs to be
 # reviewed and merged.

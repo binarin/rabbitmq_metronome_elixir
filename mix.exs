@@ -22,8 +22,9 @@ defmodule RabbitmqMetronomeElixir.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [applications: [:logger],
-     modules: [RabbitMQ.Plugin.Metronome],
+    [applications: [:logger, :rabbit],
+     mod: {RabbitMQ.Plugin.Metronome, []},
+     env: [exchange: "metronome"],
     ]
   end
 
@@ -38,11 +39,24 @@ defmodule RabbitmqMetronomeElixir.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps(deps_dir) do
     [
+      {:amqp, "~> 0.2.0"},
       # We use `true` as the command to "build" rabbit_common and
       # amqp_client because Erlang.mk already built them.
       {
         :rabbit_common,
         path: Path.join(deps_dir, "rabbit_common"),
+        compile: "true",
+        override: true
+      },
+      {
+        :amqp_client,
+        path: Path.join(deps_dir, "amqp_client"),
+        compile: "true",
+        override: true
+      },
+      {
+        :rabbit,
+        path: Path.join(deps_dir, "rabbit"),
         compile: "true",
         override: true
       },
