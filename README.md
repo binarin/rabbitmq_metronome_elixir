@@ -1,19 +1,21 @@
-# RabbitmqMetronomeElixir
+# RabbitMQ metronome plugin (Elixir version)
 
-**TODO: Add description**
+Re-implementation of https://github.com/rabbitmq/rabbitmq-metronome in
+Elixir. This is the simplest possible plugin that can be used as a
+base for making more complex ones.
 
-## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `rabbitmq_metronome_elixir` to your list of dependencies in `mix.exs`:
+## Running in an interactive mode
 
-```elixir
-def deps do
-  [{:rabbitmq_metronome_elixir, "~> 0.1.0"}]
-end
-```
+    make run-broker
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/rabbitmq_metronome_elixir](https://hexdocs.pm/rabbitmq_metronome_elixir).
+Then you can test that everything works by issuing the following in that shell:
 
+    rr(amqp_connection).
+    {ok, Conn} = amqp_connection:start(#amqp_params_direct{}).
+    {ok, C} = amqp_connection:open_channel(Conn).
+    amqp_channel:call(C, #'queue.declare'{queue= <<"abc">>}).
+    amqp_channel:call(C, #'queue.bind'{queue= <<"abc">>, exchange= <<"metronome">>, routing_key= <<"#">>}).
+    amqp_channel:call(C, #'basic.consume'{queue= <<"abc">>}).
+    %% after some time has passed
+    flush().
