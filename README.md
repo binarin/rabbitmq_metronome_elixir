@@ -4,6 +4,7 @@ Re-implementation of https://github.com/rabbitmq/rabbitmq-metronome in
 Elixir. This is the simplest possible plugin that can be used as a
 base for making more complex ones.
 
+This'll work only with RabbitMQ versions starting at ~3.7.0~.
 
 ## Running in an interactive mode
 
