@@ -29,7 +29,7 @@ defmodule RabbitMQ.Plugin.Metronome do
     end
 
     def init(:ok) do
-      {:ok, conn} = AMQP.Connection.open
+      {:ok, conn} = AMQP.Connection.open_direct
       {:ok, chan} = AMQP.Channel.open(conn)
       {:ok, exchange} = Application.fetch_env(:rabbitmq_metronome_elixir, :exchange)
       :ok = AMQP.Exchange.declare chan, exchange, :topic

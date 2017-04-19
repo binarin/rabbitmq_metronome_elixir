@@ -20,3 +20,8 @@ erl_crash.dump
 *.ez
 
 .erlang.mk/
+
+*.beam
+logs/
+log/
+Mnesia.*/

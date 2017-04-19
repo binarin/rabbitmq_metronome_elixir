@@ -1,0 +1,1 @@
+%{"amqp": {:git, "https://github.com/binarin/amqp", "5ebd2d582d4182819bc3d44de633db48218d8f25", []}}
