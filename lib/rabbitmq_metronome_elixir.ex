@@ -20,6 +20,12 @@ defmodule RabbitMQ.Plugin.Metronome do
     use GenServer
     @rk_format "~4.10.0B.~2.10.0B.~2.10.0B.~1.10.0B.~2.10.0B.~2.10.0B.~2.10.0B"
 
+    require Record
+    import AMQP.Core
+    Record.defrecordp :amqp_params_direct, :amqp_params_direct, Record.extract(:amqp_params_direct, from_lib: "amqp_client/include/amqp_client.hrl")
+    Record.defrecordp :amqp_adapter_info, :amqp_adapter_info, Record.extract(:amqp_adapter_info, from_lib: "amqp_client/include/amqp_client.hrl")
+    Record.defrecordp :amqp_msg, [props: p_basic(), payload: ""]
+
     defmodule State do
       defstruct channel: nil, exchange: nil
     end
@@ -29,10 +35,19 @@ defmodule RabbitMQ.Plugin.Metronome do
     end
 
     def init(:ok) do
-      {:ok, conn} = AMQP.Connection.open
-      {:ok, chan} = AMQP.Channel.open(conn)
+      direct_params = amqp_params_direct(
+        username: :none,
+        password: :none,
+        virtual_host: "/",
+        node: node(),
+        adapter_info: amqp_adapter_info(),
+        client_properties: [],
+      )
+      :io.format(:standard_error, "HO: ~p~n", [direct_params])
+      {:ok, conn} = :amqp_connection.start(direct_params)
+      {:ok, chan} = :amqp_connection.open_channel(conn)
       {:ok, exchange} = Application.fetch_env(:rabbitmq_metronome_elixir, :exchange)
-      :ok = AMQP.Exchange.declare chan, exchange, :topic
+      :amqp_channel.call(chan, exchange_declare(exchange: exchange, type: "topic"))
       fire()
       {:ok, %State{channel: chan, exchange: exchange}}
     end
@@ -42,7 +57,11 @@ defmodule RabbitMQ.Plugin.Metronome do
       day_of_week = :calendar.day_of_the_week(date)
       routing_key = :erlang.list_to_binary(:io_lib.format(@rk_format, [year, month, day, day_of_week, hour, min, sec]))
       payload = routing_key
-      AMQP.Basic.publish channel, exchange, routing_key, payload, content_type: "text/plain"
+
+      properties = p_basic(content_type: "text/plain", delivery_mode: 1)
+      basic_publish = basic_publish(exchange: exchange, routing_key: routing_key)
+      content = amqp_msg(props: properties, payload: payload)
+      :amqp_channel.call(channel, basic_publish, content)
       :timer.apply_after(1000, __MODULE__, :fire, [])
       {:noreply, state}
     end
@@ -52,7 +71,7 @@ defmodule RabbitMQ.Plugin.Metronome do
     end
 
     def terminate(_, %State{channel: channel}) do
-      AMQP.Channel.close(channel)
+      :amqp_channel.close(channel)
       :ok
     end
 

@@ -39,7 +39,11 @@ defmodule RabbitmqMetronomeElixir.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps(deps_dir) do
     [
-      {:amqp, "~> 0.2.0"},
+      # {:amqp, "~> 0.2.0"},
+      {
+        :amqp,
+        git: "https://github.com/binarin/amqp"
+      },
       # We use `true` as the command to "build" rabbit_common and
       # amqp_client because Erlang.mk already built them.
       {
