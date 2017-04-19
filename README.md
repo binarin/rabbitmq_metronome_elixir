@@ -19,3 +19,10 @@ Then you can test that everything works by issuing the following in that shell:
     amqp_channel:call(C, #'basic.consume'{queue= <<"abc">>}).
     %% after some time has passed
     flush().
+
+## Running tests
+
+    make ct
+
+This will compile everything and then run Common Test suite that was
+borrowed from original metronome plugin verbatim.
