@@ -1,8 +1,13 @@
+# BROKEN 
+
+Need to fix
+https://github.com/rabbitmq/rabbitmq-erlang-client/issues/91 and revert https://github.com/pma/amqp/issues/73#issuecomment-363725016
+
 # RabbitMQ metronome plugin (Elixir version)
 
 Re-implementation of https://github.com/rabbitmq/rabbitmq-metronome in
 Elixir. This is the simplest possible plugin that can be used as a
-base for making more complex ones.
+base for making more complex ones. Some explanations available at https://binarin.ru/posts/2017-04-19-rabbit-plugins-in-elixir.html
 
 This'll work only with RabbitMQ versions starting at ~3.7.0~.
 
